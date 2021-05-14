@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Virtual Environment Mon</string>
+    <string name="username_hint">username</string>
+    <string name="passhint_password">password</string>
+    <string name="login_button_text">login</string>
+    <string name="attempts_remaining_text">No. of attempts remaining: 5</string>
+    <string name="IP_hint">node IP</string>
+    <string name="port_hint">port</string>
+    <string name="default__node_port">8006</string>
+    <string name="colon">:</string>
+    <string name="login_info">Logging in...</string>
+</resources>
