@@ -4,6 +4,7 @@ package com.example.virtualenvironmentmon;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -57,7 +58,16 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         startActivity(intent);
 
-        login_btn.setOnClickListener(new View.OnClickListener() {
+        SharedPreferences sp;
+        sp = getSharedPreferences("sharedPref", MODE_PRIVATE);
+        String mesaj = sp.getString("username", "");
+        if(mesaj != "")
+            etUser.setText(mesaj);
+        String IP_server = sp.getString("IP", "");
+        if(IP_server != "")
+            etIP.setText(IP_server);
+
+            login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String inputIP = etIP.getText().toString();
@@ -126,6 +136,16 @@ public class MainActivity extends AppCompatActivity {
                         etPass.setText("");
                         progressBar.setVisibility(View.INVISIBLE);
                         tvLogin.setVisibility(View.INVISIBLE);
+
+                        SharedPreferences sp;
+                        sp = getSharedPreferences("sharedPref", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString("username", etUser.getText().toString());
+                        editor.putString("IP", etIP.getText().toString());
+                        editor.putString("port", etPort.getText().toString());
+
+                        editor.commit();
+
 
                         tvServerVersion.setText(versiune);
                         Intent intent = new Intent(MainActivity.this, HomeActivity.class);

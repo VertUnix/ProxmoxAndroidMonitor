@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.virtualenvironmentmon.fragments.HomeFragment;
-import com.example.virtualenvironmentmon.fragments.MapFragment;
+import com.example.virtualenvironmentmon.fragments.MapsFragment;
 import com.example.virtualenvironmentmon.fragments.ResourcesFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -39,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
                             selectedFragment = new ResourcesFragment();
                             break;
                         case R.id.nav_map:
-                            selectedFragment = new MapFragment();
+                            selectedFragment = new MapsFragment();
                             break;
                     }
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();

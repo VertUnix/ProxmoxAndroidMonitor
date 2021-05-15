@@ -60,11 +60,9 @@
         android:ems="10"
         android:hint="@string/IP_hint"
         android:inputType="textPersonName"
-        android:text="192.168.0.11"
         android:textAlignment="textEnd"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="192.168.0.11" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/etPort"
