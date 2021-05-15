@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,11 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import static com.example.virtualenvironmentmon.Constants.*;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 
 import it.corsinvest.proxmoxve.api.PveClient;
 import it.corsinvest.proxmoxve.api.Result;
@@ -58,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
         tvLogin = findViewById(R.id.tvLogin);
         tvLogin.setVisibility(View.INVISIBLE);
         tvServerVersion = findViewById(R.id.tvServerVersion);
+
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        startActivity(intent);
 
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                         tvLogin.setVisibility(View.INVISIBLE);
 
                         tvServerVersion.setText(versiune);
-                        Intent intent = new Intent(MainActivity.this, HomePageActivity.class);
+                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                         startActivity(intent);
                     }
 
