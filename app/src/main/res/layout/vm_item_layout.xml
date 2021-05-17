@@ -1,6 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+<ImageView
+    android:layout_width="70dp"
+    android:scaleType="fitXY"
+    android:layout_height="70dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:id="@+id/vm_item_image_view"/>
+
+    <LinearLayout
+        android:id="@+id/vm_item_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/vm_item_image_view"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/vm_title_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kali_VM (101)"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            tools:text="Kali_VM (101)" />
+
+        <TextView
+            android:id="@+id/vm_cpu_mem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="CPU: 2 cores, 1 socket              Memory: 2048MB"
+            android:textSize="12sp"
+            tools:text="CPU: 2 cores, 1 socket              Memory: 2048MB" />
+
+        <TextView
+            android:id="@+id/vm_disk_uptime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Disk size: 32GB                          Uptime: 01:03:55"
+            android:textSize="12sp"
+            tools:text="Disk size: 32GB                          Uptime: 01:03:55" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/vm_item_image_view"
+        android:text="running"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+
+
+</RelativeLayout>

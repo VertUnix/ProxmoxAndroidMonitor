@@ -21,4 +21,10 @@ public final class Constants {
     public static final int WRONG_CREDENTIALS = 2;
     public static final int UNKNOWN_ERROR = -2;
 
+    /*
+    Unit measures conversions
+     */
+    public static final int bytes_to_gigabytes = 1024 * 1024 * 1024;
+    public static final int bytes_to_megabytes = 1024 * 1024;
+
 }

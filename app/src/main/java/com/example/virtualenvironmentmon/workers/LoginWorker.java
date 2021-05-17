@@ -8,11 +8,11 @@ import android.app.Activity;
  */
 public class LoginWorker extends Thread{
 
-    private Activity activity;
-    private String name;
-    private String password;
-    private String IP;
-    private int port;
+    private final Activity activity;
+    private final String name;
+    private final String password;
+    private final String IP;
+    private final int port;
 
     /**
      * The constructor of the class.

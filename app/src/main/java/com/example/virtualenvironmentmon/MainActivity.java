@@ -15,9 +15,18 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.virtualenvironmentmon.models.Locations;
+import com.example.virtualenvironmentmon.models.LocationsDB;
+import com.example.virtualenvironmentmon.models.LoginValidationResult;
+import com.example.virtualenvironmentmon.models.daos.LocationsDao;
+
 import static com.example.virtualenvironmentmon.Constants.*;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.List;
 
 import it.corsinvest.proxmoxve.api.PveClient;
 import it.corsinvest.proxmoxve.api.Result;
@@ -36,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private String versiune;
     PveClient client;
 
-    int loginCode = -1;
+    LoginValidationResult loginResult;
     private int counter = 10;
 
     @Override
@@ -55,8 +64,11 @@ public class MainActivity extends AppCompatActivity {
         tvLogin.setVisibility(View.INVISIBLE);
         tvServerVersion = findViewById(R.id.tvServerVersion);
 
-        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-        startActivity(intent);
+        PveClient cl = new PveClient("dummy_IP", 8006);
+        loginResult = new LoginValidationResult(-1, cl);
+
+        //Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        //startActivity(intent);
 
         SharedPreferences sp;
         sp = getSharedPreferences("sharedPref", MODE_PRIVATE);
@@ -85,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                                 System.out.println("Does it work?");
                                 try {
-                                    loginCode = validate(inputName, inputPassword, inputIP, inputPort);
+                                    validate(inputName, inputPassword, inputIP, inputPort);
                                 } catch (Exception ex) {
                                     Log.d("Validation thread: ","Validation unsuccessful.");
                                 }
@@ -94,9 +106,9 @@ public class MainActivity extends AppCompatActivity {
 
                     };
 
-                    Log.d("Login code 1:", String.valueOf(loginCode));
+                    Log.d("Login code 1:", String.valueOf(loginResult.loginCode));
                     thread_login.start();
-                    Log.d("Login code: 2", String.valueOf(loginCode));
+                    Log.d("Login code: 2", String.valueOf(loginResult.loginCode));
 
                     try {
                         Thread.sleep(6000);
@@ -104,11 +116,11 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     //loginCode = validate(inputName, inputPassword, inputIP, inputPort);
-                    Log.d("Login code: 3", String.valueOf(loginCode));
+                    Log.d("Login code: 3", String.valueOf(loginResult.loginCode));
 
 
                     --counter;
-                     if(loginCode == WRONG_CREDENTIALS) {
+                     if(loginResult.loginCode == WRONG_CREDENTIALS) {
                         Toast.makeText(MainActivity.this, "Wrong credentials.", Toast.LENGTH_LONG).show();
                         GradientDrawable gd = new GradientDrawable();
                         gd.setColor(Color.parseColor("#00ffffff"));
@@ -120,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                     }
-                    else if(loginCode == WRONG_NODE) {
+                    else if(loginResult.loginCode == WRONG_NODE) {
                         Toast.makeText(MainActivity.this, "Wrong IP or port.", Toast.LENGTH_LONG).show();
                         GradientDrawable gd = new GradientDrawable();
                         gd.setColor(Color.parseColor("#00ffffff"));
@@ -131,7 +143,9 @@ public class MainActivity extends AppCompatActivity {
                         tvLogin.setVisibility(View.INVISIBLE);
 
                     }
-                    else if(loginCode == LOGIN_OK){
+                    else if(loginResult.loginCode == LOGIN_OK){
+
+
                         Toast.makeText(MainActivity.this, "Welcome", Toast.LENGTH_LONG).show();
                         etPass.setText("");
                         progressBar.setVisibility(View.INVISIBLE);
@@ -143,13 +157,29 @@ public class MainActivity extends AppCompatActivity {
                         editor.putString("username", etUser.getText().toString());
                         editor.putString("IP", etIP.getText().toString());
                         editor.putString("port", etPort.getText().toString());
-
                         editor.commit();
 
-
                         tvServerVersion.setText(versiune);
+
+                         try {
+                             String serverReply = String.valueOf(loginResult.client.getVersion().version().getResponse().get("data"));
+                             System.out.println("+++++++++++++" + serverReply);
+                         } catch (JSONException e) {
+                             e.printStackTrace();
+                         }
+
+                        /**
+                         * The following lines works only if this activity and HomeActivity run on the same process.
+                         */
                         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                         startActivity(intent);
+
+                        final PveClient objSent = loginResult.client;
+                        final Bundle bundle = new Bundle();
+                        bundle.putBinder("object_value", new ObjectWrapperForBinder(objSent));
+                        startActivity(intent.putExtras(bundle));
+                        Log.d("objSent", "original object=");
+
                     }
 
 //                    if(counter == 0)
@@ -159,30 +189,53 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    private int validate(String name, String password, String IP, int port) {
 
+    /**
+     * Validates the login and returns the client object, wrapped together with the login status.
+     * @param name username
+     * @param password user password
+     * @param IP server IP
+     * @param port defaulted to 8006
+     * @return Returns a class that contains both an integer login status code (successful/ unsuccessful)
+     * and a PveClient class which contains the access token needed to authorise further actions.
+     */
+    private LoginValidationResult validate(String name, String password, String IP, int port) {
+
+        LoginValidationResult loginValidationResult= new LoginValidationResult ();
         try {
             client = new PveClient(IP, port);
             Result result = client.login(name, password, "pam");
+            loginValidationResult.client = client;
             if (result.isSuccessStatusCode()) {
                 Log.d("MainActivity", "Login Successful");
                 String serverReply = String.valueOf(client.getVersion().version().getResponse().get("data"));
                 System.out.println(serverReply);
+
+
                 //JSONObject replyJsonObject = new JSONObject(serverReply);
                 //String version = replyJsonObject.getString("version");
                 //System.out.println("VERSIUNE: " + version);
                 //this.versiune = version;
-                return LOGIN_OK;
+                loginValidationResult.loginCode = LOGIN_OK;
+                loginResult = loginValidationResult;
+                return  loginValidationResult;
             } else if (result.getStatusCode() == CONN_TIMEOUT) {
-                return WRONG_NODE;
+                loginValidationResult.loginCode = WRONG_NODE;
+                loginResult = loginValidationResult;
+                return  loginValidationResult;
             } else if (result.getStatusCode() == FORBIDDEN) {
-                return WRONG_CREDENTIALS;
+                loginValidationResult.loginCode = WRONG_CREDENTIALS;
+                loginResult = loginValidationResult;
+                return  loginValidationResult;
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            return UNKNOWN_ERROR;
+            loginValidationResult.loginCode = UNKNOWN_ERROR;
+            loginResult = loginValidationResult;
+            return  loginValidationResult;
         }
-        return UNKNOWN_ERROR;
+        loginValidationResult.loginCode = UNKNOWN_ERROR;
+        return  loginValidationResult;
     }
 }
 

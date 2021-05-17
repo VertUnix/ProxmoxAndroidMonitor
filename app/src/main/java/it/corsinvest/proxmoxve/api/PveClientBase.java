@@ -20,12 +20,14 @@ import com.example.virtualenvironmentmon.MainActivity;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -56,9 +58,18 @@ public class PveClientBase {
 
     private String _ticketCSRFPreventionToken;
     private String _ticketPVEAuthCookie;
-    private final String _hostname;
-    private final int _port;
+    protected final String _hostname;
+    protected final int _port;
     private int _debugLevel;
+
+    public void set_ticketCSRFPreventionToken(String _ticketCSRFPreventionToken) {
+        this._ticketCSRFPreventionToken = _ticketCSRFPreventionToken;
+    }
+
+    public void set_ticketPVEAuthCookie(String _ticketPVEAuthCookie) {
+        this._ticketPVEAuthCookie = _ticketPVEAuthCookie;
+    }
+
     private Result _lastResult;
     private ResponseType _responseType = ResponseType.JSON;
     private String _apiToken;
@@ -69,6 +80,8 @@ public class PveClientBase {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
     }
+
+
 
     /**
      * Gets the hostname configured.
@@ -365,7 +378,7 @@ public class PveClientBase {
                         postData.append(postData.length() > 0 ? "&" : "").append(key).append("=").append(value);
                     });
 
-                    byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+                    byte[] postDataBytes = postData.toString().getBytes(StandardCharsets.UTF_8);
                     httpCon = (HttpURLConnection) new URL(url).openConnection();
                     httpCon.setRequestMethod(httpMethod);
                     httpCon.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");

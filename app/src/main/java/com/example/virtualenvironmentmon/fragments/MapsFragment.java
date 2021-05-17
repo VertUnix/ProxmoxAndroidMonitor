@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.virtualenvironmentmon.R;
+import com.example.virtualenvironmentmon.models.Locations;
+import com.example.virtualenvironmentmon.models.LocationsDB;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -17,9 +19,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
 public class MapsFragment extends Fragment {
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+    private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
          * Manipulates the map once available.
@@ -32,13 +36,31 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng node1 = new LatLng(44.411537663676945, 26.173585079047385);
-            LatLng node2 = new LatLng(44.445625, 26.039647);
-            LatLng node3 = new LatLng(44.4183707338293, 26.08444736468625);
-            LatLng Bucharest = new LatLng(44.4314135324562, 26.100022758591628);
-            googleMap.addMarker(new MarkerOptions().position(node1).title("PVE node Location"));
-            googleMap.addMarker(new MarkerOptions().position(node2).title("Bkp1 node Location"));
-            googleMap.addMarker(new MarkerOptions().position(node3).title("Bkp2 node Location"));
+            /**
+            * WARNING!
+             * Adding 4 locations in the DB.
+             * On the first run, the following insert lines MUST be included:
+            */
+            //Locations loc_Bucharest = new Locations("Bucharest", 44.4314135324562, 26.100022758591628);
+            //Locations loc_pve = new Locations("PVE node", 44.411537663676945, 26.173585079047385);
+            //Locations loc_bkp1 = new Locations("Backup 1 node", 44.445625, 26.039647);
+            //Locations loc_bkp2 = new Locations("Backup 2 node", 44.4183707338293, 26.08444736468625)
+            LocationsDB db = LocationsDB.getInstance(getActivity().getApplicationContext());
+            //db.getLocationsDao().insert(loc_Bucharest);
+            //db.getLocationsDao().insert(loc_pve);
+            //db.getLocationsDao().insert(loc_bkp1);
+            //db.getLocationsDao().insert(loc_bkp2);
+            List<Locations> ld = db.getLocationsDao().getAll();
+            for (Locations loc : ld) {
+                if(!loc.getPlace_name().equals("Bucharest")) {
+                    LatLng node = new LatLng(loc.getLat(), loc.getLng());
+                    googleMap.addMarker(new MarkerOptions().position(node).title(loc.getPlace_name()));
+                }
+            }
+
+            Locations city = db.getLocationsDao().getLocationByName("Bucharest");
+            //LatLng Bucharest = new LatLng(44.4314135324562, 26.100022758591628);
+            LatLng Bucharest = new LatLng(city.getLat(), city.getLng());
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Bucharest, 10.5f));
             //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(node2, 15f));
         }

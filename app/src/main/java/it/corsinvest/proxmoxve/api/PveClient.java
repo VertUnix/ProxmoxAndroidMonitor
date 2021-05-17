@@ -11,6 +11,7 @@
  */
 package it.corsinvest.proxmoxve.api;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONException;
@@ -21,6 +22,11 @@ import org.json.JSONException;
 public class PveClient extends PveClientBase {
 
     private final PveClient _client;
+
+    public PveClient(PveClient client_orig) {
+        super(client_orig._hostname, client_orig._port);
+        _client = client_orig._client;
+    }
 
     public PveClient(String hostname, int port) {
         super(hostname, port);
