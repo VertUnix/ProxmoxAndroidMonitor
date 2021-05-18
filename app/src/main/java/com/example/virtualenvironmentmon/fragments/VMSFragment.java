@@ -64,12 +64,12 @@ public class VMSFragment extends Fragment {
 
         System.out.println("=================");
 
-        try {
-            String serverReply = String.valueOf(client.getVersion().version().getResponse().get("data"));
-            System.out.println("+++++++++++++" + serverReply);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            String serverReply = String.valueOf(client.getVersion().version().getResponse().get("data"));
+//            System.out.println("+++++++++++++" + serverReply);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
 
         JSONArray vms_list = null;
         try {
@@ -117,10 +117,8 @@ public class VMSFragment extends Fragment {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity(), "T: " + adapter.getItem(position), Toast.LENGTH_SHORT).show();
-//                VS dene = new Deneme(4,"Mustafa");
-//                Intent i = new Intent(this, Y.class);
-//                startActivity(i);
+                //Toast.makeText(getActivity(), "T: " + adapter.getItem(position), Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent(getActivity().getApplicationContext(), vmDetailsActivity.class);
                 intent.putExtra("vm_details", vms.get(position));
                 startActivity(intent);

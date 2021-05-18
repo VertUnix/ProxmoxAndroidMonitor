@@ -26,6 +26,7 @@
             android:id="@+id/vm_title_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="Kali_VM (101)"
             android:textAlignment="center"
             android:textSize="20sp"
@@ -35,8 +36,9 @@
             android:id="@+id/vm_cpu_mem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="CPU: 2 cores, 1 socket              Memory: 2048MB"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="20dp"
+            android:text="CPU: 2 cores, 1 socket                        Memory: 2048MB"
             android:textSize="12sp"
             tools:text="CPU: 2 cores, 1 socket              Memory: 2048MB" />
 
@@ -44,8 +46,9 @@
             android:id="@+id/vm_disk_uptime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Disk size: 32GB                          Uptime: 01:03:55"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:text="Disk size: 32GB                                    Uptime: 01:03:55"
             android:textSize="12sp"
             tools:text="Disk size: 32GB                          Uptime: 01:03:55" />
 

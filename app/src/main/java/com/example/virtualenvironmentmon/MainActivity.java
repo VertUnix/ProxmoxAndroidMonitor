@@ -21,10 +21,12 @@ import com.example.virtualenvironmentmon.models.LocationsDB;
 import com.example.virtualenvironmentmon.models.LoginValidationResult;
 import com.example.virtualenvironmentmon.models.daos.LocationsDao;
 
+import static android.view.View.VISIBLE;
 import static com.example.virtualenvironmentmon.Constants.*;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         loginResult = new LoginValidationResult(-1, cl);
 
         //Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        //Intent intent = new Intent(MainActivity.this, ChartActivity.class);
         //startActivity(intent);
 
         SharedPreferences sp;
@@ -90,97 +93,106 @@ public class MainActivity extends AppCompatActivity {
                 if (inputName.isEmpty() || inputPassword.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Enter both username and password.", Toast.LENGTH_SHORT).show();
                 } else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    tvLogin.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(VISIBLE);
+                    tvLogin.setVisibility(VISIBLE);
 
                     Thread thread_login = new Thread() {
                         public void run() {
                                 System.out.println("Does it work?");
                                 try {
+
+                                    runOnUiThread(() -> {
+                                        progressBar.setVisibility(VISIBLE);
+                                        tvLogin.setVisibility(VISIBLE);
+                                    });
+
                                     validate(inputName, inputPassword, inputIP, inputPort);
+
+                                    runOnUiThread(() -> {
+
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                        tvLogin.setVisibility(View.INVISIBLE);
+
+                                        if(loginResult.loginCode == WRONG_CREDENTIALS) {
+                                            Toast.makeText(MainActivity.this, "Wrong credentials.", Toast.LENGTH_LONG).show();
+                                            GradientDrawable gd = new GradientDrawable();
+                                            gd.setColor(Color.parseColor("#00ffffff"));
+                                            gd.setStroke(2,Color.RED);
+                                            etUser.setBackground(gd);
+                                            etPass.setBackground(gd);
+                                        }
+                                        else if(loginResult.loginCode == WRONG_NODE) {
+                                            Toast.makeText(MainActivity.this, "Wrong IP or port.", Toast.LENGTH_LONG).show();
+                                            GradientDrawable gd = new GradientDrawable();
+                                            gd.setColor(Color.parseColor("#00ffffff"));
+                                            gd.setStroke(2,Color.RED);
+                                            etIP.setBackground(gd);
+                                            etPort.setBackground(gd);
+                                        }
+
+                                        else if(loginResult.loginCode == LOGIN_OK){
+
+                                            Toast.makeText(MainActivity.this, "Welcome", Toast.LENGTH_LONG).show();
+                                            etPass.setText("");
+
+                                            SharedPreferences sp;
+                                            sp = getSharedPreferences("sharedPref", MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sp.edit();
+                                            editor.putString("username", etUser.getText().toString());
+                                            editor.putString("IP", etIP.getText().toString());
+                                            editor.putString("port", etPort.getText().toString());
+                                            editor.commit();
+
+                                            tvServerVersion.setText(versiune);
+
+                                            try {
+                                                String serverReply = String.valueOf(loginResult.client.getVersion().version().getResponse().get("data"));
+                                                System.out.println("+++++++++++++" + serverReply);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            /**
+                                             * The following lines works only if this activity and HomeActivity run on the same process.
+                                             */
+                                            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                                            startActivity(intent);
+
+                                            final PveClient objSent = loginResult.client;
+                                            final Bundle bundle = new Bundle();
+                                            bundle.putBinder("object_value", new ObjectWrapperForBinder(objSent));
+                                            startActivity(intent.putExtras(bundle));
+                                            Log.d("objSent", "original object=");
+                                        }
+                                    });
+
+//                                    runOnUiThread(() -> {
+//                                        progressBar.setVisibility(View.INVISIBLE);
+//                                        tvLogin.setVisibility(View.INVISIBLE);
+//                                    });
                                 } catch (Exception ex) {
                                     Log.d("Validation thread: ","Validation unsuccessful.");
                                 }
-                                System.out.println("Nope, it doesnt...again.");
+
                             }
 
                     };
 
-                    Log.d("Login code 1:", String.valueOf(loginResult.loginCode));
+                    //Log.d("Login code 1:", String.valueOf(loginResult.loginCode));
                     thread_login.start();
-                    Log.d("Login code: 2", String.valueOf(loginResult.loginCode));
+                    //Log.d("Login code: 2", String.valueOf(loginResult.loginCode));
 
-                    try {
-                        Thread.sleep(6000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        Thread.sleep(6000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
                     //loginCode = validate(inputName, inputPassword, inputIP, inputPort);
-                    Log.d("Login code: 3", String.valueOf(loginResult.loginCode));
+                    //Log.d("Login code: 3", String.valueOf(loginResult.loginCode));
 
 
-                    --counter;
-                     if(loginResult.loginCode == WRONG_CREDENTIALS) {
-                        Toast.makeText(MainActivity.this, "Wrong credentials.", Toast.LENGTH_LONG).show();
-                        GradientDrawable gd = new GradientDrawable();
-                        gd.setColor(Color.parseColor("#00ffffff"));
-                        gd.setStroke(2,Color.RED);
-                        etUser.setBackground(gd);
-                        etPass.setBackground(gd);
-                        progressBar.setVisibility(View.INVISIBLE);
-                        tvLogin.setVisibility(View.INVISIBLE);
 
 
-                    }
-                    else if(loginResult.loginCode == WRONG_NODE) {
-                        Toast.makeText(MainActivity.this, "Wrong IP or port.", Toast.LENGTH_LONG).show();
-                        GradientDrawable gd = new GradientDrawable();
-                        gd.setColor(Color.parseColor("#00ffffff"));
-                        gd.setStroke(2,Color.RED);
-                        etIP.setBackground(gd);
-                        etPort.setBackground(gd);
-                        progressBar.setVisibility(View.INVISIBLE);
-                        tvLogin.setVisibility(View.INVISIBLE);
-
-                    }
-                    else if(loginResult.loginCode == LOGIN_OK){
-
-
-                        Toast.makeText(MainActivity.this, "Welcome", Toast.LENGTH_LONG).show();
-                        etPass.setText("");
-                        progressBar.setVisibility(View.INVISIBLE);
-                        tvLogin.setVisibility(View.INVISIBLE);
-
-                        SharedPreferences sp;
-                        sp = getSharedPreferences("sharedPref", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("username", etUser.getText().toString());
-                        editor.putString("IP", etIP.getText().toString());
-                        editor.putString("port", etPort.getText().toString());
-                        editor.commit();
-
-                        tvServerVersion.setText(versiune);
-
-                         try {
-                             String serverReply = String.valueOf(loginResult.client.getVersion().version().getResponse().get("data"));
-                             System.out.println("+++++++++++++" + serverReply);
-                         } catch (JSONException e) {
-                             e.printStackTrace();
-                         }
-
-                        /**
-                         * The following lines works only if this activity and HomeActivity run on the same process.
-                         */
-                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                        startActivity(intent);
-
-                        final PveClient objSent = loginResult.client;
-                        final Bundle bundle = new Bundle();
-                        bundle.putBinder("object_value", new ObjectWrapperForBinder(objSent));
-                        startActivity(intent.putExtras(bundle));
-                        Log.d("objSent", "original object=");
-
-                    }
 
 //                    if(counter == 0)
 //                        login_btn.setEnabled(false);
@@ -210,12 +222,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("MainActivity", "Login Successful");
                 String serverReply = String.valueOf(client.getVersion().version().getResponse().get("data"));
                 System.out.println(serverReply);
+                JSONObject replyJsonObject = new JSONObject(serverReply);
+                String version = replyJsonObject.getString("version");
+                System.out.println("VERSIUNE: " + version);
+                this.versiune = version;
 
 
-                //JSONObject replyJsonObject = new JSONObject(serverReply);
-                //String version = replyJsonObject.getString("version");
-                //System.out.println("VERSIUNE: " + version);
-                //this.versiune = version;
+
                 loginValidationResult.loginCode = LOGIN_OK;
                 loginResult = loginValidationResult;
                 return  loginValidationResult;

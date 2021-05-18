@@ -3,9 +3,11 @@ package com.example.virtualenvironmentmon;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.virtualenvironmentmon.models.VM;
@@ -24,7 +26,7 @@ public class vmDetailsActivity extends AppCompatActivity {
     private TextView tvVMCPULoad;
     private Button btnGraph;
 
-
+    VM vm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ public class vmDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_vm_details);
 
         Intent i = getIntent();
-        VM vm = (VM) i.getSerializableExtra("vm_details");
+        vm = (VM) i.getSerializableExtra("vm_details");
 
         tvVMName = findViewById(R.id.tvVMName);
         tvVMID = findViewById(R.id.tvVMID);
@@ -61,13 +63,12 @@ public class vmDetailsActivity extends AppCompatActivity {
         tvVMCores.setText(String.valueOf(vm.cpus) + " cores");
         tvVMCPULoad.setText(String.valueOf(vm.cpuLoad) + "%");
 
+    }
 
-//        btnGraph.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onGraphBtnClick(View v) {
-//                ;
-//            }
-//            });
-
+    public void memoryGraphButtonHandler(View view) {
+        Intent intent = new Intent(vmDetailsActivity.this, ChartActivity.class);
+        intent.putExtra("currentMem", vm.currentMem);
+        intent.putExtra("maxMem", vm.maxMem);
+        startActivity(intent);
     }
 }

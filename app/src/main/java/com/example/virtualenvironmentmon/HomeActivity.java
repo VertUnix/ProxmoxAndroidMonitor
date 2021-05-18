@@ -63,9 +63,9 @@ public class HomeActivity extends AppCompatActivity {
                         case R.id.nav_vms:
                             selectedFragment = new VMSFragment();
                             break;
-                        case R.id.nav_containers:
-                            selectedFragment = new ContainersFragment();
-                            break;
+//                        case R.id.nav_containers:
+//                            selectedFragment = new ContainersFragment();
+//                            break;
                         case R.id.nav_map:
                             selectedFragment = new MapsFragment();
                             break;

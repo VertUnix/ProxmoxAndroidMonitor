@@ -9,10 +9,10 @@
         android:id="@+id/nav_vms"
         android:icon="@drawable/ic_baseline_backup_table_24"
         android:title="VMs" />
-    <item
-        android:id="@+id/nav_containers"
-        android:icon="@drawable/ic_baseline_view_module_24"
-        android:title="LXC" />
+<!--    <item-->
+<!--        android:id="@+id/nav_containers"-->
+<!--        android:icon="@drawable/ic_baseline_view_module_24"-->
+<!--        android:title="LXC" />-->
     <item
         android:id="@+id/nav_map"
         android:icon="@drawable/ic_baseline_map_24"

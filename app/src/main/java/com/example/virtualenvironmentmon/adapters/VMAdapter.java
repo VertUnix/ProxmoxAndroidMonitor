@@ -51,10 +51,18 @@ public class VMAdapter extends BaseAdapter {
         TextView tvStatus = v.findViewById(R.id.status);
         String disk_uptime_text;
         VM vm = (VM) getItem(position);
+        TextView tv1 = v.findViewById(R.id.vm_title_id);
+        TextView tv2 = v.findViewById(R.id.vm_cpu_mem);
+        TextView tv3 = v.findViewById(R.id.vm_disk_uptime);
         if(vm.status.equals("running")) {
             iv.setColorFilter(ContextCompat.getColor(ctx, R.color.online_green), android.graphics.PorterDuff.Mode.SRC_IN);
             tvStatus.setText("running");
             tvStatus.setTextColor(ContextCompat.getColor(ctx, R.color.online_green));
+            tvStatus.setTextColor(ContextCompat.getColor(ctx, R.color.online_green));
+            tv1.setTextColor(ContextCompat.getColor(ctx, R.color.online_green));
+            tv2.setTextColor(ContextCompat.getColor(ctx, R.color.online_green));
+            tv3.setTextColor(ContextCompat.getColor(ctx, R.color.online_green));
+
             disk_uptime_text = "Disk: " + vm.maxDisk + " GB" + "              " + "Uptime: " + vm.uptime + " m";
         }
         else {
@@ -62,9 +70,6 @@ public class VMAdapter extends BaseAdapter {
             tvStatus.setText(vm.status);
             disk_uptime_text = "Disk: " + vm.maxDisk + " GB";
         }
-        TextView tv1 = v.findViewById(R.id.vm_title_id);
-        TextView tv2 = v.findViewById(R.id.vm_cpu_mem);
-        TextView tv3 = v.findViewById(R.id.vm_disk_uptime);
         iv.setImageResource(vm.getImage());
         tv1.setText(vm.name + " (" + vm.ID + ")");
         tv2.setText("CPUs: " + vm.cpus + "              " + "Memory: " + vm.maxMem + " MB");
