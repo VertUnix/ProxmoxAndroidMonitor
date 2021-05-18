@@ -38,18 +38,22 @@ public class MapsFragment extends Fragment {
         public void onMapReady(GoogleMap googleMap) {
             /**
             * WARNING!
+             * If there is a crash when Map Fragment is selected, the entries from the DB
+             * are probably gone and must be re-inserted.
+             *
              * Adding 4 locations in the DB.
              * On the first run, the following insert lines MUST be included:
             */
-            //Locations loc_Bucharest = new Locations("Bucharest", 44.4314135324562, 26.100022758591628);
-            //Locations loc_pve = new Locations("PVE node", 44.411537663676945, 26.173585079047385);
-            //Locations loc_bkp1 = new Locations("Backup 1 node", 44.445625, 26.039647);
-            //Locations loc_bkp2 = new Locations("Backup 2 node", 44.4183707338293, 26.08444736468625)
+//            Locations loc_Bucharest = new Locations("Bucharest", 44.4314135324562, 26.100022758591628);
+//            Locations loc_pve = new Locations("PVE node", 44.411537663676945, 26.173585079047385);
+//            Locations loc_bkp1 = new Locations("Backup 1 node", 44.445625, 26.039647);
+//            Locations loc_bkp2 = new Locations("Backup 2 node", 44.4183707338293, 26.08444736468625);
             LocationsDB db = LocationsDB.getInstance(getActivity().getApplicationContext());
-            //db.getLocationsDao().insert(loc_Bucharest);
-            //db.getLocationsDao().insert(loc_pve);
-            //db.getLocationsDao().insert(loc_bkp1);
-            //db.getLocationsDao().insert(loc_bkp2);
+//            db.getLocationsDao().insert(loc_Bucharest);
+//            db.getLocationsDao().insert(loc_pve);
+//            db.getLocationsDao().insert(loc_bkp1);
+//            db.getLocationsDao().insert(loc_bkp2);
+
             List<Locations> ld = db.getLocationsDao().getAll();
             for (Locations loc : ld) {
                 if(!loc.getPlace_name().equals("Bucharest")) {
