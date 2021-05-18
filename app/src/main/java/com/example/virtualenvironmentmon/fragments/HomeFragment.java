@@ -78,14 +78,12 @@ public class HomeFragment extends Fragment {
                     JSONObject serverJSONStatus = new JSONObject();
                     serverJSONStatus = client.getNodes().get("pve").getStatus().getRest().getResponse().getJSONObject("data");
                     double cpuLoad = serverJSONStatus.getDouble("cpu");
-                    JSONObject ksmJSONObject = new JSONObject();
-                    ksmJSONObject = serverJSONStatus.getJSONObject("ksm");
-                    int uptime = ksmJSONObject.getInt("uptime");
-                    tvUptime.setText(String.valueOf(uptime) + " s");
-                    System.out.println("====--====" + uptime);
+                    int uptime = serverJSONStatus.getInt("uptime");
                     /*Run on UI thread*/
                     getActivity().runOnUiThread(() -> {
 
+                        tvUptime.setText(String.valueOf(uptime) + " s");
+                        System.out.println("====--====" + uptime);
                         BigDecimal bd = new BigDecimal(cpuLoad).setScale(3, RoundingMode.HALF_UP);
                         double roundedCPULoad = bd.doubleValue();
                         pbCPU.setProgress((int)(roundedCPULoad * 100));
